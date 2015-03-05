@@ -25,7 +25,7 @@ function [events,clustersId,cl_limGT,sum,imagesRemoved]=analizarExcel_Narrative(
             m=m+1;
         end
     end
-  
+  %%
     [~,textA] = xlsread(excelfile);
     [f,c]=size(textA);
     %eventsString=textA(3:f,2);
