@@ -1,6 +1,15 @@
 # Egocentric_Visual_Keyframes_Summary
 
-This code extracts a visual summary of a set of egocentric images captured by Narrative Clip or  SenseCam. The result is a collage with one image summarizing every event of the images’ set. The extraction runs as follows:
+This code extracts a visual summary of a set of egocentric images captured by Narrative Clip or  SenseCam. The result is a collage with one image summarizing every event of the images’ set. 
+
+If you use this code, please cite the following paper:
+
+    Bolaños, M., Mestre, R., Talavera, E., Giró-i-Nieto, X. & Radeva, P. (2015). 
+    “Visual Summary of Egocentric Photostreams by Representative Keyframes”. 
+    In International Workshop on Wearable and Ego-vision Systems for Augmented Experience (WEsAX). ICME (in press). 
+    Pre-print: http://arxiv.org/abs/1505.01130
+
+The extraction runs as follows:
 
 [visualSummaryRandomWalk, visualSummaryMinimumDistance, visualSummaryRandom, visualSummaryUniform] = mainVisualSummary(path, montageFlag);
 
