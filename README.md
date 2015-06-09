@@ -9,6 +9,11 @@ If you use this code, please cite the following paper:
     In International Workshop on Wearable and Ego-vision Systems for Augmented Experience (WEsAX). ICME (in press). 
     Pre-print: http://arxiv.org/abs/1505.01130
 
+For using the code, please download BVLC Reference CaffeNet model from the provided script from Caffe 
+(./scripts/download_model_binary.py) and pass its path as a parameter to maingVisualSummary.m. 
+Check the following link for more information:
+http://caffe.berkeleyvision.org/model_zoo.html
+
 The extraction runs as follows:
 
 [visualSummaryRandomWalk, visualSummaryMinimumDistance, visualSummaryRandom, visualSummaryUniform] = mainVisualSummary(path, montageFlag);
