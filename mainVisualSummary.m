@@ -20,7 +20,7 @@ function [visualSummaryRandomWalk, visualSummaryMinimumDistance, visualSummaryRa
 if(nargin < 3)
     params.caffe_path = '/usr/local/caffe-dev/matlab/caffe/';
     params.use_gpu = true;
-    params.model_file = [pwd '/CNN_models/bvlc_reference_caffenet.caffemodel'];
+    params.model_file = '/usr/local/caffe-dev/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel';
     params.format = 'jpg';
 end
 
