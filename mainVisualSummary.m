@@ -1,19 +1,35 @@
-function [visualSummaryRandomWalk, visualSummaryMinimumDistance, visualSummaryRandom, visualSummaryUniform] = mainVisualSummary(path, montageFlag)
+function [visualSummaryRandomWalk, visualSummaryMinimumDistance, visualSummaryRandom, visualSummaryUniform] = mainVisualSummary(path, montageFlag, params)
 %This function extracts the visual summary of all the images of the specific path.
 %Inputs:
 %   path: string containing the path of the images to summarize.
-%         Example of path: path='/imatge/rmestre/work/Images/testImages/Petia2';
+%         Example of path: path='/imatge/rmestre/work/Images/testImages/Dataset2';
 %   montageFlag: boolean. If it's value is true, the code will plot every event and it's representative images. 
 %         This is useful if we want to extract figures with the complete events and the representative images to evaluate the results.
 %         It is recommended to put a breakpoint at the "montage(im)" line, if not all figures will overwrite the previous one.
+%   params: structure containing the following information
+%           -> caffe_path: path to Caffe's Matlab installation
+%           -> use_gpu: boolean for using GPU mode for Caffe
+%           -> model_file: path to the .caffemodel file with the pre-trained network
+%           -> format: images format (e.g. 'jpg', 'png', etc.)
 %Output:
 %   visualSummaryRandomWalk: a cell array containing the paths of the representative images extracted through random walk.
 %   visualSummaryMinimumDistance: a cell array containing the paths of the representative images extracted through minimum distance.
 %   visualSummaryRandom: a cell array containing the paths of the representative images extracted choosing a random image of the event.
 %   visualSummaryUniform: a cell array containing the paths of the representative images extracted choosing temporally equidistant images.
 
+if(nargin < 3)
+    params.caffe_path = '/usr/local/caffe-dev/matlab/caffe/';
+    params.use_gpu = true;
+    params.model_file = [pwd '/CNN_models/bvlc_reference_caffenet.caffemodel'];
+    params.format = 'jpg';
+end
+
+params.batch_size = 10; % Depending on the deploy net structure!!
+params.model_def_file = [pwd '/CNN_models/deploy_features.prototxt'];
+params.size_features = 4096;
+
 %Feature extraction
-features=extractCNNFeatures(path);
+features=extractCNNFeatures(path, params);
 
 %Extraction of the features name
 features=extractNF(path,features);
