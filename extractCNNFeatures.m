@@ -1,10 +1,11 @@
-function features=extractCNNFeatures(path, CNN_params)
+function [features, names]=extractCNNFeatures(path, CNN_params)
 %This function uses the ConvolutionalNN provided by Caffe to extract features for the given set of images.
 %Input:
 %   path: string containing the path of the images set to analize.
 %Output:
 %   features: matrix containing the features vectors of the images of the
 %   specific path.
+%   names: list of names of all the images in the dataset
 
     batch_size = CNN_params.batch_size;
 

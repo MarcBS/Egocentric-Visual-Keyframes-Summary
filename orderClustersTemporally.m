@@ -1,7 +1,8 @@
-function [orderedCluster, boundariesAutomaticCluster]=orderClustersTemporally(nameImages, clust_auto, N)
+function [orderedCluster, boundariesAutomaticCluster]=orderClustersTemporally(tmp_order, im_names, clust_auto, N)
 %This function applies the division algorithm to obtain the ordered events taking into account the temporal information of the images name.
 %Inputs: 
-%   nameImages: vector containing the name of the images.
+%   tmp_order: vector containing the temporal order of the images
+%   im_names: list of image names
 %   clust_auto: cell array with the automatic event clustering.
 %   N: scalar indicating the minimum number of images that must contain an
 %   event.
@@ -13,22 +14,23 @@ function [orderedCluster, boundariesAutomaticCluster]=orderClustersTemporally(na
 %   ordered cluster.
 
 
-nameImages=[nameImages zeros(length(nameImages),2)];
+tmp_order=[tmp_order zeros(length(tmp_order),2)];
 
-for k=1:length(nameImages)
-    nameImages(k,2)=find(cellfun(@(x) any(x==nameImages(k,1)),clust_auto)==1);
+for k=1:size(tmp_order,1)
+%     tmp_order(k,2)=find(cellfun(@(x) any(x==tmp_order(k,1)),clust_auto)==1);
+    tmp_order(k,2)=find(cellfun(@(x) any(ismember(x,im_names(k))),clust_auto));
 end
 
 numClusters=length(clust_auto);
-lastClusterNumber=nameImages(N,2);
-lookingClusterNumber=nameImages(N,2);
+lastClusterNumber=tmp_order(N,2);
+lookingClusterNumber=tmp_order(N,2);
 followedImages=N;
-nameImages(1:N-1,2)=lookingClusterNumber;
+tmp_order(1:N-1,2)=lookingClusterNumber;
 flag=1;
     
-    for k=N+1:length(nameImages)
+    for k=N+1:length(tmp_order)
         
-        currentClusterNumber=nameImages(k,2);
+        currentClusterNumber=tmp_order(k,2);
         
         if followedImages<N-1
         
@@ -38,9 +40,9 @@ flag=1;
 
             else
                 
-                nameImages(k-followedImages:k-1,2)=lookingClusterNumber;
+                tmp_order(k-followedImages:k-1,2)=lookingClusterNumber;
                 
-                nameImages(k-followedImages:k-1,3)=flag;
+                tmp_order(k-followedImages:k-1,3)=flag;
                 
                 flag=flag+1;
                 
@@ -65,17 +67,17 @@ flag=1;
                                 
             elseif currentClusterNumber==lastClusterNumber && currentClusterNumber~=lookingClusterNumber
                 
-                indicesLookingClusterNumber=find(nameImages(:,2)==lookingClusterNumber);
+                indicesLookingClusterNumber=find(tmp_order(:,2)==lookingClusterNumber);
                 indicesPostLookingClusterNumber=indicesLookingClusterNumber(indicesLookingClusterNumber>k);
-                nameImages(indicesPostLookingClusterNumber,2)=numClusters+1;
+                tmp_order(indicesPostLookingClusterNumber,2)=numClusters+1;
                 numClusters=numClusters+1;
                 lookingClusterNumber=currentClusterNumber;
                 followedImages=followedImages+1;
                 
             elseif currentClusterNumber~=lastClusterNumber && lastClusterNumber~=lookingClusterNumber
                 
-                nameImages(k-followedImages:k-1,2)=lookingClusterNumber;
-                nameImages(k-followedImages:k-1,3)=flag;
+                tmp_order(k-followedImages:k-1,2)=lookingClusterNumber;
+                tmp_order(k-followedImages:k-1,3)=flag;
                 imagesInLookingCluster=imagesInLookingCluster+followedImages;
                 followedImages=1;
                 flag=flag+1;
@@ -91,9 +93,9 @@ flag=1;
         lastClusterNumber=currentClusterNumber;
         
     end 
-    nameImages(k,2)=nameImages(k-1,2);
+    tmp_order(k,2)=tmp_order(k-1,2);
     
-preOrderedCluster=nameImages(:,2:end);
+preOrderedCluster=tmp_order(:,2:end);
 lastValue=preOrderedCluster(1,1);
 lastValueFlag=preOrderedCluster(1,2);
 cnt=1;
@@ -140,17 +142,17 @@ end
 for k=1:max(preOrderedCluster(:,2))
     
     indicesSubCluster=find(preOrderedCluster(:,2)==k);
-    subCluster=nameImages(indicesSubCluster,1);
+    subCluster=tmp_order(indicesSubCluster,1);
     infborder=min(subCluster);
     supborder=max(subCluster);
     % If the lower border is not the lower index possible 
-    if infborder~=nameImages(1,1)
-        borderInferiorCloserCluster=nameImages(find(nameImages==infborder)-1);
+    if infborder~=tmp_order(1,1)
+        borderInferiorCloserCluster=tmp_order(find(tmp_order==infborder)-1);
     else
         borderInferiorCloserCluster=infborder;
     end
-    if supborder~=nameImages(1,end)
-        borderSuperiorCloserCluster=nameImages(find(nameImages==supborder)+1);
+    if supborder~=tmp_order(1,end)
+        borderSuperiorCloserCluster=tmp_order(find(tmp_order==supborder)+1);
     else
         borderSuperiorCloserCluster=supborder;
     end
@@ -173,8 +175,7 @@ if length(preOrderedCluster(preOrderedCluster(:,1)==preOrderedCluster(end,1)))<N
         
 end
 
-orderedCluster(:,1)=nameImages(:,1);
-orderedCluster(:,2)=preOrderedCluster(:,1);
+orderedCluster=preOrderedCluster(:,1);
 
 end
     
